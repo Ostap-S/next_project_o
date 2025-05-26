@@ -1,5 +1,9 @@
-import { Hello } from "./component/hello";
+import Chart from './component/Chart';
 
 export default function Home() {
-  return <Hello />;
+  return (
+    <main>
+      <Chart />
+    </main>
+  );
 }
