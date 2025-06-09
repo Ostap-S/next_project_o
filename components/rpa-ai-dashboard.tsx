@@ -283,7 +283,7 @@ const Dashboard = ({
                   isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
                 }`}
               >
-                {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+                {isSidebarOpen ? (<X size={20} stroke={isDarkMode ? "white" : "black"} />) : (<Menu size={20} stroke={isDarkMode ? "white" : "black"} />)}
               </button>
             </div>
 
@@ -807,7 +807,7 @@ const Dashboard = ({
                       isDarkMode ? "bg-cyan-400" : "bg-teal-500"
                     }`}
                   ></div>
-                  <span>Revenue</span>
+                  <span className={isDarkMode ? "text-white" : "text-black"}>Revenue</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div
@@ -815,9 +815,9 @@ const Dashboard = ({
                       isDarkMode ? "bg-slate-500" : "bg-gray-800"
                     }`}
                   ></div>
-                  <span>Sales</span>
+                  <span className={isDarkMode ? "text-white" : "text-black"}>Sales</span>
                 </div>
-                <span>Profit</span>
+                <span className={isDarkMode ? "text-white" : "text-black"}>Profit</span>
               </div>
             </div>
           )}
@@ -1313,7 +1313,7 @@ const Dashboard = ({
             <div className="flex items-center justify-center min-h-full">
               <div className="w-full max-w-md">
                 <div
-                  className={`rounded-xl p-8 shadow-lg ${
+                  className={`rounded-xl p-8 shadow-lg transition-colors ${
                     isDarkMode ? "bg-gray-800" : "bg-white"
                   }`}
                 >
@@ -1323,14 +1323,14 @@ const Dashboard = ({
                       className="mx-auto text-blue-500 mb-4"
                     />
                     <h1
-                      className={`text-2xl font-semibold mb-2 ${
+                      className={`text-2xl font-semibold mb-2 transition-colors ${
                         isDarkMode ? "text-white" : "text-gray-800"
                       }`}
                     >
                       Report Generation
                     </h1>
                     <p
-                      className={`text-sm ${
+                      className={`text-sm transition-colors ${
                         isDarkMode ? "text-gray-300" : "text-gray-600"
                       }`}
                     >
@@ -1342,7 +1342,7 @@ const Dashboard = ({
                   <form className="space-y-4">
                     <div>
                       <label
-                        className={`block text-sm font-medium mb-2 ${
+                        className={`block text-sm font-medium mb-2 transition-colors ${
                           isDarkMode ? "text-gray-200" : "text-gray-700"
                         }`}
                       >
@@ -1352,7 +1352,7 @@ const Dashboard = ({
                         className={`w-full border rounded-lg px-3 py-3 focus:ring-2 focus:ring-blue-500 transition-colors ${
                           isDarkMode
                             ? "bg-gray-700 border-gray-600 text-white"
-                            : "border-gray-300"
+                            : "bg-white border-gray-300 text-black"
                         }`}
                       >
                         <option>Complete Analytics Report</option>
@@ -1364,7 +1364,7 @@ const Dashboard = ({
 
                     <div>
                       <label
-                        className={`block text-sm font-medium mb-2 ${
+                        className={`block text-sm font-medium mb-2 transition-colors ${
                           isDarkMode ? "text-gray-200" : "text-gray-700"
                         }`}
                       >
@@ -1376,8 +1376,8 @@ const Dashboard = ({
                           placeholder="Start date"
                           className={`border rounded-lg px-3 py-3 focus:ring-2 focus:ring-blue-500 transition-colors ${
                             isDarkMode
-                              ? "bg-gray-700 border-gray-600 text-white"
-                              : "border-gray-300"
+                              ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                              : "bg-white border-gray-300 text-black placeholder-gray-500"
                           }`}
                         />
                         <input
@@ -1385,8 +1385,8 @@ const Dashboard = ({
                           placeholder="End date"
                           className={`border rounded-lg px-3 py-3 focus:ring-2 focus:ring-blue-500 transition-colors ${
                             isDarkMode
-                              ? "bg-gray-700 border-gray-600 text-white"
-                              : "border-gray-300"
+                              ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                              : "bg-white border-gray-300 text-black placeholder-gray-500"
                           }`}
                         />
                       </div>
@@ -1394,7 +1394,7 @@ const Dashboard = ({
 
                     <div>
                       <label
-                        className={`block text-sm font-medium mb-2 ${
+                        className={`block text-sm font-medium mb-2 transition-colors ${
                           isDarkMode ? "text-gray-200" : "text-gray-700"
                         }`}
                       >
@@ -1415,7 +1415,7 @@ const Dashboard = ({
                               className="mr-3 text-blue-500 rounded focus:ring-blue-500"
                             />
                             <span
-                              className={`text-sm ${
+                              className={`text-sm transition-colors ${
                                 isDarkMode ? "text-gray-300" : "text-gray-600"
                               }`}
                             >
@@ -1442,41 +1442,8 @@ const Dashboard = ({
                         isDarkMode ? "text-gray-400" : "text-gray-500"
                       }`}
                     >
-                      Export options
                     </p>
-                    <div className="flex justify-center space-x-3">
-                      <button
-                        className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center hover:bg-red-200 transition-colors"
-                        title="PDF"
-                      >
-                        <span className="text-red-500 font-bold text-xs">
-                          PDF
-                        </span>
-                      </button>
-                      <button
-                        className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center hover:bg-green-200 transition-colors"
-                        title="Excel"
-                      >
-                        <span className="text-green-500 font-bold text-xs">
-                          XLS
-                        </span>
-                      </button>
-                      <button
-                        className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center hover:bg-blue-200 transition-colors"
-                        title="CSV"
-                      >
-                        <span className="text-blue-500 font-bold text-xs">
-                          CSV
-                        </span>
-                      </button>
-                      <button
-                        className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center hover:bg-purple-200 transition-colors"
-                        title="JSON"
-                      >
-                        <span className="text-purple-500 font-bold text-xs">
-                          JSON
-                        </span>
-                      </button>
+                    <div className="">
                     </div>
                   </div>
 
@@ -1486,10 +1453,6 @@ const Dashboard = ({
                         isDarkMode ? "text-gray-400" : "text-gray-600"
                       }`}
                     >
-                      Need help with reports?
-                      <button className="text-blue-500 hover:underline ml-1 font-medium">
-                        View Documentation
-                      </button>
                     </p>
                   </div>
                 </div>
@@ -1584,8 +1547,8 @@ const Dashboard = ({
                         placeholder="Ask about your dashboard data..."
                         className={`flex-1 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                           isDarkMode
-                            ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-                            : "border-gray-300"
+                            ? "bg-gray-700 border border-gray-600 text-white placeholder-gray-400"
+                            : "bg-white border border-gray-300 text-black placeholder-gray-500"}
                         }`}
                       />
                       <button
