@@ -9,10 +9,10 @@ export default async function ProtectedPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const { data: users } = await supabase.from("users").select();
+  // const { data: users } = await supabase.from("users").select();
 
   return <>
     {/* <AuthButton /> */}
-    <Dashboard users={users} email={user?.email ?? 'Loading...'} />
+    <Dashboard email={user?.email ?? 'Loading...'} />
     </>
 }

@@ -31,10 +31,10 @@ import { useRouter } from "next/navigation";
 
 const Dashboard = ({
   email,
-  users
+  // users
 }: {
   email: string;
-  users: any
+  // users: any
 }) => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("dashboard");
