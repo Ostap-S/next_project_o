@@ -31,9 +31,11 @@ import { useRouter } from "next/navigation";
 
 const Dashboard = ({
   email,
+  weeklyData
   // users
 }: {
-  email: string;
+    email: string;
+  weeklyData: any
   // users: any
 }) => {
   const router = useRouter();
@@ -85,16 +87,21 @@ const Dashboard = ({
   });
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
 
-  const weeklyData = [
-    { day: "Sunday", revenue: 450, sales: 320 },
-    { day: "Monday", revenue: 500, sales: 250 },
-    { day: "Tuesday", revenue: 420, sales: 380 },
-    { day: "Wednesday", revenue: 560, sales: 450 },
-    { day: "Thursday", revenue: 230, sales: 200 },
-    { day: "Friday", revenue: 410, sales: 370 },
-    { day: "Saturday", revenue: 190, sales: 390 },
-  ];
+  // const weeklyData = [
+  //   { day: "Sunday", revenue: 450, sales: 320 },
+  //   { day: "Monday", revenue: 500, sales: 250 },
+  //   { day: "Tuesday", revenue: 420, sales: 380 },
+  //   { day: "Wednesday", revenue: 560, sales: 450 },
+  //   { day: "Thursday", revenue: 230, sales: 200 },
+  //   { day: "Friday", revenue: 410, sales: 370 },
+  //   { day: "Saturday", revenue: 190, sales: 390 },
+  // ];
 
+  // Sales
+  // id
+  // revenue
+  // sale
+  // createdAt
   const yearlyData = [
     { year: "2017", q1: 20, q2: 15 },
     { year: "2018", q1: 10, q2: 12 },
