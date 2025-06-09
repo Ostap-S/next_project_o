@@ -2,8 +2,16 @@
 
 import { useEffect, useState } from 'react'
 
+// Створимо тип для користувача
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
 export default function HomePage() {
-  const [users, setUsers] = useState([])
+  // Тип для користувачів: масив об'єктів User
+  const [users, setUsers] = useState<User[]>([])
 
   useEffect(() => {
     fetch('/api/users')
@@ -15,7 +23,7 @@ export default function HomePage() {
     <div>
       <h1>Users</h1>
       <ul>
-        {users.map((user: any) => (
+        {users.map((user) => (
           <li key={user.id}>{user.name} ({user.email})</li>
         ))}
       </ul>
