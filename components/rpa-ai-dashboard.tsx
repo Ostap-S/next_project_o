@@ -45,26 +45,7 @@ const Dashboard = ({
     {
       id: 1,
       type: "bot",
-      message:
-        "Hello! I can help you analyze your dashboard data. What would you like to know?",
-    },
-    {
-      id: 2,
-      type: "user",
-      message: "What is our best performing day this week?",
-    },
-    {
-      id: 3,
-      type: "bot",
-      message:
-        "Wednesday was your best performing day with $560 in revenue and 450 sales. This represents a 33% increase compared to your average daily performance.",
-    },
-    { id: 4, type: "user", message: "How is our user growth trending?" },
-    {
-      id: 5,
-      type: "bot",
-      message:
-        "User growth is positive at +8.21% since last month, reaching 63,154 total users. This trend indicates healthy organic growth in your user base.",
+      message: "Hello! I can help you analyze your dashboard data.",
     },
   ]);
   const [chatInput, setChatInput] = useState("");
@@ -110,13 +91,13 @@ const Dashboard = ({
   // createdAt
 
   const yearlyData = [
-    { year: "2017", q1: 20, q2: 15 },
-    { year: "2018", q1: 10, q2: 12 },
-    { year: "2019", q1: 25, q2: 20 },
-    { year: "2020", q1: 35, q2: 30 },
-    { year: "2021", q1: 30, q2: 32 },
-    { year: "2022", q1: 40, q2: 35 },
-    { year: "2023", q1: 45, q2: 42 },
+    { year: "2019", q1: 26, q2: 15 },
+    { year: "2020", q1: 10, q2: 12 },
+    { year: "2021", q1: 43, q2: 32 },
+    { year: "2022", q1: 52, q2: 39 },
+    { year: "2023", q1: 63, q2: 60 },
+    { year: "2024", q1: 78, q2: 73 },
+    { year: "2025", q1: 93, q2: 86 },
   ];
 
   const sidebarItems = [
@@ -631,18 +612,6 @@ const Dashboard = ({
                   >
                     Dashboards {">"} Welcome!
                   </div>
-                  <button
-                    onClick={refreshDashboard}
-                    disabled={isRefreshing}
-                    className={`p-2 rounded transition-colors focus:outline-none ${
-                      isDarkMode
-                        ? "bg-gray-600 text-gray-300 hover:bg-gray-700 focus:ring-2 focus:ring-blue-500"
-                        : "bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500"
-                    } ${isRefreshing ? "opacity-50 cursor-not-allowed" : ""}`}
-                    title="Refresh dashboard"
-                  >
-                    {isRefreshing ? "⟳" : "↻"}
-                  </button>
                 </div>
               </div>
 
@@ -653,13 +622,13 @@ const Dashboard = ({
                       ? "bg-gradient-to-r from-cyan-400 to-cyan-500"
                       : "bg-gradient-to-r from-pink-400 to-pink-500"
                   }`}
-                  title="Daily Visits: 8,652 (+2.97% since last month)"
+                  title="Daily Visits: 10,265 (+5.97% since last month)"
                 >
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm opacity-90">DAILY VISITS</p>
-                      <p className="text-3xl font-bold">8,652</p>
-                      <p className="text-sm mt-1">+2.97% Since last month</p>
+                      <p className="text-3xl font-bold">10,265</p>
+                      <p className="text-sm mt-1">+5.97% Since last month</p>
                     </div>
                     <Eye size={32} className="opacity-80" />
                   </div>
@@ -671,12 +640,12 @@ const Dashboard = ({
                       ? "bg-gradient-to-r from-emerald-400 to-emerald-500"
                       : "bg-gradient-to-r from-purple-500 to-purple-600"
                   }`}
-                  title="Revenue: $9,254.62 (+18.25% since last month)"
+                  title="Revenue: $13,254.62 (+18.25% since last month)"
                 >
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm opacity-90">REVENUE</p>
-                      <p className="text-3xl font-bold">$9,254.62</p>
+                      <p className="text-3xl font-bold">$13,254.62</p>
                       <p className="text-sm mt-1">+18.25% Since last month</p>
                     </div>
                     <DollarSign size={32} className="opacity-80" />
@@ -689,13 +658,13 @@ const Dashboard = ({
                       ? "bg-gradient-to-r from-yellow-400 to-yellow-500"
                       : "bg-gradient-to-r from-blue-400 to-blue-500"
                   }`}
-                  title="Orders: 753 (-5.75% since last month)"
+                  title="Orders: 1242 (-3.75% since last month)"
                 >
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm opacity-90">ORDERS</p>
-                      <p className="text-3xl font-bold">753</p>
-                      <p className="text-sm mt-1">-5.75% Since last month</p>
+                      <p className="text-3xl font-bold">1242</p>
+                      <p className="text-sm mt-1">-3.75% Since last month</p>
                     </div>
                     <ShoppingCart size={32} className="opacity-80" />
                   </div>
@@ -707,13 +676,13 @@ const Dashboard = ({
                       ? "bg-gradient-to-r from-orange-400 to-orange-500"
                       : "bg-gradient-to-r from-teal-400 to-teal-500"
                   }`}
-                  title="Users: 63,154 (+8.21% since last month)"
+                  title="Users: 124,302 (+10.21% since last month)"
                 >
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm opacity-90">USERS</p>
-                      <p className="text-3xl font-bold">63,154</p>
-                      <p className="text-sm mt-1">+8.21% Since last month</p>
+                      <p className="text-3xl font-bold">124,302</p>
+                      <p className="text-sm mt-1">+10.21% Since last month</p>
                     </div>
                     <Users size={32} className="opacity-80" />
                   </div>
@@ -791,7 +760,7 @@ const Dashboard = ({
                           isDarkMode ? "text-white" : "text-gray-800"
                         }`}
                       >
-                        $506.54
+                        $1402.43
                       </p>
                     </div>
                     <div className="text-center">
@@ -807,7 +776,7 @@ const Dashboard = ({
                           isDarkMode ? "text-white" : "text-gray-800"
                         }`}
                       >
-                        $305.25
+                        $1306.74
                       </p>
                     </div>
                     <div className="text-center">
@@ -823,7 +792,7 @@ const Dashboard = ({
                           isDarkMode ? "text-white" : "text-gray-800"
                         }`}
                       >
-                        3.27%
+                        3.43%
                       </p>
                     </div>
                     <div className="text-center">
@@ -839,7 +808,7 @@ const Dashboard = ({
                           isDarkMode ? "text-white" : "text-gray-800"
                         }`}
                       >
-                        3k
+                        4k
                       </p>
                     </div>
                   </div>
@@ -892,6 +861,12 @@ const Dashboard = ({
                         stroke={isDarkMode ? "#64748B" : "#1F2937"}
                         strokeWidth={3}
                       />
+                      <Line
+                        type="monotone"
+                        dataKey="q3"
+                        stroke={isDarkMode ? "#64748B" : "#1F2937"}
+                        strokeWidth={3}
+                      />
                     </LineChart>
                   </ResponsiveContainer>
 
@@ -910,7 +885,7 @@ const Dashboard = ({
                             isDarkMode ? "text-white" : "text-gray-800"
                           }`}
                         >
-                          $56.2k
+                          $63.8k
                         </p>
                       </div>
                       <div>
@@ -926,7 +901,23 @@ const Dashboard = ({
                             isDarkMode ? "text-white" : "text-gray-800"
                           }`}
                         >
-                          $42.5k
+                          $78.4k
+                        </p>
+                      </div>
+                      <div>
+                        <p
+                          className={`text-sm ${
+                            isDarkMode ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        >
+                          Quarter 3
+                        </p>
+                        <p
+                          className={`text-xl font-bold ${
+                            isDarkMode ? "text-white" : "text-gray-800"
+                          }`}
+                        >
+                          $93.2k
                         </p>
                       </div>
                       <div>
@@ -942,7 +933,7 @@ const Dashboard = ({
                             isDarkMode ? "text-white" : "text-gray-800"
                           }`}
                         >
-                          $102.03k
+                          $235.4k
                         </p>
                       </div>
                     </div>
@@ -952,7 +943,7 @@ const Dashboard = ({
                           isDarkMode ? "text-white" : "text-gray-800"
                         }`}
                       >
-                        69.25%
+                        66.25%
                       </p>
                       <p
                         className={`text-sm ${
