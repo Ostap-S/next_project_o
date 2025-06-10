@@ -31,11 +31,11 @@ import { useRouter } from "next/navigation";
 
 const Dashboard = ({
   email,
-  weeklyData
-  // users
-}: {
-    email: string;
-  weeklyData: any
+  weeklyData,
+}: // users
+{
+  email: string;
+  weeklyData: any;
   // users: any
 }) => {
   const router = useRouter();
@@ -86,6 +86,12 @@ const Dashboard = ({
     terms: false,
   });
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+  const [dashboardData, setDashboardData] = useState<{
+    timestamp: string;
+    refreshCount: number;
+  } | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   // const weeklyData = [
   //   { day: "Sunday", revenue: 450, sales: 320 },
@@ -102,6 +108,7 @@ const Dashboard = ({
   // revenue
   // sale
   // createdAt
+
   const yearlyData = [
     { year: "2017", q1: 20, q2: 15 },
     { year: "2018", q1: 10, q2: 12 },
@@ -145,8 +152,11 @@ const Dashboard = ({
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
-      if (showSettingsMenu && !event.target.closest(".relative")) {
+      if (showSettingsMenu && !event.target.closest(".settings-menu")) {
         setShowSettingsMenu(false);
+      }
+      if (showNotifications && !event.target.closest(".notifications-menu")) {
+        setShowNotifications(false);
       }
     };
 
@@ -154,7 +164,7 @@ const Dashboard = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showSettingsMenu]);
+  }, [showSettingsMenu, showNotifications]);
 
   useEffect(() => {
     if (isDragging) {
@@ -221,6 +231,22 @@ const Dashboard = ({
       "PDF Report Generated Successfully!\\n\\nReport includes:\\n• Revenue Analytics\\n• User Metrics\\n• Sales Performance\\n• Weekly Trends\\n\\nDownload started..."
     );
   };
+  const refreshDashboard = async () => {
+    setIsRefreshing(true);
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const newData = {
+        timestamp: new Date().toISOString(),
+        refreshCount: dashboardData ? dashboardData.refreshCount + 1 : 1,
+      };
+      setDashboardData(newData);
+    } catch (error) {
+      console.error("Error refreshing dashboard:", error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   const handleLoginSubmit = (e: any) => {
     e.preventDefault();
@@ -232,14 +258,12 @@ const Dashboard = ({
     alert("Registration functionality would create new account");
   };
 
-  
   return (
     <div
       className={`flex h-screen ${
         isDarkMode ? "bg-gray-900" : "bg-gray-50"
       } transition-colors`}
     >
-      
       <div
         className={`${
           isSidebarOpen ? "w-64" : "w-0"
@@ -283,23 +307,159 @@ const Dashboard = ({
                   isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
                 }`}
               >
-                {isSidebarOpen ? (<X size={20} stroke={isDarkMode ? "white" : "black"} />) : (<Menu size={20} stroke={isDarkMode ? "white" : "black"} />)}
+                {isSidebarOpen ? (
+                  <X size={20} stroke={isDarkMode ? "white" : "black"} />
+                ) : (
+                  <Menu size={20} stroke={isDarkMode ? "white" : "black"} />
+                )}
               </button>
             </div>
 
             <div className="flex items-center space-x-4">
-              <div className="relative">
-                <Bell
-                  size={20}
-                  className={`${
-                    isDarkMode ? "text-gray-300" : "text-gray-600"
-                  }`}
-                />
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  3
-                </span>
+              <div className="relative notifications-menu">
+                <div className="relative notifications-menu">
+                  <button
+                    onClick={() => setShowNotifications(!showNotifications)}
+                    className={`p-2 rounded-lg transition-colors ${
+                      isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                    }`}
+                  >
+                    <Bell
+                      size={20}
+                      className={`${
+                        isDarkMode ? "text-gray-300" : "text-gray-600"
+                      }`}
+                    />
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-2 w-2 flex items-center justify-center"></span>
+                  </button>
+
+                  {showNotifications && (
+                    <div
+                      className={`absolute right-0 mt-2 w-80 rounded-lg shadow-lg z-50 ${
+                        isDarkMode
+                          ? "bg-gray-800 border border-gray-700"
+                          : "bg-white border border-gray-200"
+                      }`}
+                    >
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3
+                            className={`text-lg font-semibold ${
+                              isDarkMode ? "text-white" : "text-gray-800"
+                            }`}
+                          >
+                            Notifications
+                          </h3>
+                          <button
+                            onClick={() => setShowNotifications(false)}
+                            className={`text-sm ${
+                              isDarkMode ? "text-blue-400" : "text-blue-600"
+                            } hover:underline`}
+                          ></button>
+                        </div>
+
+                        <div className="space-y-3 max-h-96 overflow-y-auto">
+                          {/* Notification 3 */}
+                          <div
+                            className={`p-3 rounded-lg ${
+                              isDarkMode ? "bg-gray-700" : "bg-gray-50"
+                            } cursor-pointer hover:${
+                              isDarkMode ? "bg-gray-600" : "bg-gray-100"
+                            } transition-colors`}
+                          >
+                            <div className="flex items-start space-x-3">
+                              <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                              <div className="flex-1 min-w-0">
+                                <p
+                                  className={`text-sm font-medium ${
+                                    isDarkMode ? "text-white" : "text-gray-800"
+                                  }`}
+                                >
+                                  Low conversion rate alert
+                                </p>
+                                <p
+                                  className={`text-xs ${
+                                    isDarkMode
+                                      ? "text-gray-400"
+                                      : "text-gray-600"
+                                  } mt-1`}
+                                >
+                                  Conversion rate dropped to 3.27%. Consider
+                                  reviewing your strategy.
+                                </p>
+                                <p
+                                  className={`text-xs ${
+                                    isDarkMode
+                                      ? "text-gray-500"
+                                      : "text-gray-500"
+                                  } mt-1`}
+                                >
+                                  3 hours ago
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Notification 5 - Read */}
+                          <div
+                            className={`p-3 rounded-lg ${
+                              isDarkMode ? "bg-gray-800" : "bg-white"
+                            } cursor-pointer hover:${
+                              isDarkMode ? "bg-gray-700" : "bg-gray-50"
+                            } transition-colors border ${
+                              isDarkMode ? "border-gray-600" : "border-gray-200"
+                            }`}
+                          >
+                            <div className="flex items-start space-x-3">
+                              <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                              <div className="flex-1 min-w-0">
+                                <p
+                                  className={`text-sm ${
+                                    isDarkMode
+                                      ? "text-gray-300"
+                                      : "text-gray-600"
+                                  }`}
+                                >
+                                  New user registration spike
+                                </p>
+                                <p
+                                  className={`text-xs ${
+                                    isDarkMode
+                                      ? "text-gray-500"
+                                      : "text-gray-500"
+                                  } mt-1`}
+                                >
+                                  50+ new users registered in the last 24 hours.
+                                </p>
+                                <p
+                                  className={`text-xs ${
+                                    isDarkMode
+                                      ? "text-gray-500"
+                                      : "text-gray-500"
+                                  } mt-1`}
+                                >
+                                  2 days ago
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 pt-3 border-t border-gray-200">
+                          <button
+                            className={`w-full text-center text-sm ${
+                              isDarkMode ? "text-blue-400" : "text-blue-600"
+                            } hover:underline`}
+                          >
+                            View all notifications
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="relative">
+              <div className="relative settings-menu">
                 <button
                   onClick={() => setShowSettingsMenu(!showSettingsMenu)}
                   className={`p-2 rounded-lg transition-colors ${
@@ -409,7 +569,9 @@ const Dashboard = ({
                 )}
               </div>
               <button
-                onClick={() => {setIsDarkMode(!isDarkMode)}}
+                onClick={() => {
+                  setIsDarkMode(!isDarkMode);
+                }}
                 className={`p-2 rounded-lg transition-colors ${
                   isDarkMode
                     ? "hover:bg-gray-700 text-yellow-400"
@@ -437,19 +599,50 @@ const Dashboard = ({
           {activeTab === "dashboard" && (
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h1
-                  className={`text-2xl font-semibold ${
-                    isDarkMode ? "text-white" : "text-gray-800"
-                  }`}
-                >
-                  Welcome!
-                </h1>
-                <div
-                  className={`text-sm ${
-                    isDarkMode ? "text-gray-400" : "text-gray-500"
-                  }`}
-                >
-                  Dashboards {">"} Welcome!
+                <div>
+                  <h1
+                    className={`text-2xl font-semibold ${
+                      isDarkMode ? "text-white" : "text-gray-800"
+                    }`}
+                  >
+                    Welcome!
+                  </h1>
+                  {dashboardData && (
+                    <p
+                      className={`text-sm ${
+                        isDarkMode ? "text-gray-400" : "text-gray-500"
+                      } mt-1`}
+                    >
+                      Last refreshed:{" "}
+                      {new Date(dashboardData.timestamp).toLocaleTimeString()}
+                      {isRefreshing && (
+                        <span className="ml-2 text-blue-500">
+                          Refreshing...
+                        </span>
+                      )}
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div
+                    className={`text-sm ${
+                      isDarkMode ? "text-gray-400" : "text-gray-500"
+                    }`}
+                  >
+                    Dashboards {">"} Welcome!
+                  </div>
+                  <button
+                    onClick={refreshDashboard}
+                    disabled={isRefreshing}
+                    className={`p-2 rounded transition-colors focus:outline-none ${
+                      isDarkMode
+                        ? "bg-gray-600 text-gray-300 hover:bg-gray-700 focus:ring-2 focus:ring-blue-500"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500"
+                    } ${isRefreshing ? "opacity-50 cursor-not-allowed" : ""}`}
+                    title="Refresh dashboard"
+                  >
+                    {isRefreshing ? "⟳" : "↻"}
+                  </button>
                 </div>
               </div>
 
@@ -553,31 +746,18 @@ const Dashboard = ({
                     </h3>
                     <div className="flex space-x-2">
                       <button
-                        className={`p-1 rounded transition-colors ${
+                        onClick={refreshDashboard}
+                        disabled={isRefreshing}
+                        className={`p-2 rounded transition-colors focus:outline-none ${
                           isDarkMode
-                            ? "hover:bg-gray-700 text-gray-300"
-                            : "hover:bg-gray-100"
+                            ? "bg-gray-600 text-gray-300 hover:bg-gray-700 focus:ring-2 focus:ring-blue-500"
+                            : "bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500"
+                        } ${
+                          isRefreshing ? "opacity-50 cursor-not-allowed" : ""
                         }`}
+                        title="Refresh dashboard"
                       >
-                        ↻
-                      </button>
-                      <button
-                        className={`p-1 rounded transition-colors ${
-                          isDarkMode
-                            ? "hover:bg-gray-700 text-gray-300"
-                            : "hover:bg-gray-100"
-                        }`}
-                      >
-                        −
-                      </button>
-                      <button
-                        className={`p-1 rounded transition-colors ${
-                          isDarkMode
-                            ? "hover:bg-gray-700 text-gray-300"
-                            : "hover:bg-gray-100"
-                        }`}
-                      >
-                        ×
+                        {isRefreshing ? "⟳" : "↻"}
                       </button>
                     </div>
                   </div>
@@ -664,7 +844,6 @@ const Dashboard = ({
                     </div>
                   </div>
                 </div>
-            
 
                 <div
                   className={`rounded-xl p-6 shadow-sm ${
@@ -681,31 +860,18 @@ const Dashboard = ({
                     </h3>
                     <div className="flex space-x-2">
                       <button
-                        className={`p-1 rounded transition-colors ${
+                        onClick={refreshDashboard}
+                        disabled={isRefreshing}
+                        className={`p-2 rounded transition-colors focus:outline-none ${
                           isDarkMode
-                            ? "hover:bg-gray-700 text-gray-300"
-                            : "hover:bg-gray-100"
+                            ? "bg-gray-600 text-gray-300 hover:bg-gray-700 focus:ring-2 focus:ring-blue-500"
+                            : "bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-2 focus:ring-blue-500"
+                        } ${
+                          isRefreshing ? "opacity-50 cursor-not-allowed" : ""
                         }`}
+                        title="Refresh dashboard"
                       >
-                        ↻
-                      </button>
-                      <button
-                        className={`p-1 rounded transition-colors ${
-                          isDarkMode
-                            ? "hover:bg-gray-700 text-gray-300"
-                            : "hover:bg-gray-100"
-                        }`}
-                      >
-                        −
-                      </button>
-                      <button
-                        className={`p-1 rounded transition-colors ${
-                          isDarkMode
-                            ? "hover:bg-gray-700 text-gray-300"
-                            : "hover:bg-gray-100"
-                        }`}
-                      >
-                        ×
+                        {isRefreshing ? "⟳" : "↻"}
                       </button>
                     </div>
                   </div>
@@ -807,7 +973,9 @@ const Dashboard = ({
                       isDarkMode ? "bg-cyan-400" : "bg-teal-500"
                     }`}
                   ></div>
-                  <span className={isDarkMode ? "text-white" : "text-black"}>Revenue</span>
+                  <span className={isDarkMode ? "text-white" : "text-black"}>
+                    Revenue
+                  </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div
@@ -815,9 +983,10 @@ const Dashboard = ({
                       isDarkMode ? "bg-slate-500" : "bg-gray-800"
                     }`}
                   ></div>
-                  <span className={isDarkMode ? "text-white" : "text-black"}>Sales</span>
+                  <span className={isDarkMode ? "text-white" : "text-black"}>
+                    Sales
+                  </span>
                 </div>
-                <span className={isDarkMode ? "text-white" : "text-black"}>Profit</span>
               </div>
             </div>
           )}
@@ -1349,22 +1518,38 @@ const Dashboard = ({
                         Report Type
                       </label>
                       <select
-                        className={`w-full border rounded-lg px-3 py-3 focus:ring-2 focus:ring-blue-500 transition-colors ${
+                        className={`w-full border rounded-lg pl-4 pr-10 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-colors appearance-none ${
                           isDarkMode
-                            ? "bg-gray-700 border-gray-600 text-white"
-                            : "bg-white border-gray-300 text-black"
-                        }`}
+                            ? "bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+                            : "bg-white border-gray-300 text-gray-800 hover:bg-gray-50"
+                        } cursor-pointer`}
                       >
-                        <option>Complete Analytics Report</option>
-                        <option>Revenue Only</option>
-                        <option>User Metrics Only</option>
-                        <option>Weekly Performance</option>
+                        <option
+                          className={isDarkMode ? "bg-gray-700" : "bg-white"}
+                        >
+                          Complete Analytics Report
+                        </option>
+                        <option
+                          className={isDarkMode ? "bg-gray-700" : "bg-white"}
+                        >
+                          Revenue Only
+                        </option>
+                        <option
+                          className={isDarkMode ? "bg-gray-700" : "bg-white"}
+                        >
+                          User Metrics Only
+                        </option>
+                        <option
+                          className={isDarkMode ? "bg-gray-700" : "bg-white"}
+                        >
+                          Weekly Performance
+                        </option>
                       </select>
                     </div>
 
                     <div>
                       <label
-                        className={`block text-sm font-medium mb-2 transition-colors ${
+                        className={`block text-sm font-medium mb-2 ${
                           isDarkMode ? "text-gray-200" : "text-gray-700"
                         }`}
                       >
@@ -1376,8 +1561,8 @@ const Dashboard = ({
                           placeholder="Start date"
                           className={`border rounded-lg px-3 py-3 focus:ring-2 focus:ring-blue-500 transition-colors ${
                             isDarkMode
-                              ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-                              : "bg-white border-gray-300 text-black placeholder-gray-500"
+                              ? "bg-gray-700 border-gray-600 text-white"
+                              : "bg-white border-gray-300 text-gray-700"
                           }`}
                         />
                         <input
@@ -1385,8 +1570,8 @@ const Dashboard = ({
                           placeholder="End date"
                           className={`border rounded-lg px-3 py-3 focus:ring-2 focus:ring-blue-500 transition-colors ${
                             isDarkMode
-                              ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-                              : "bg-white border-gray-300 text-black placeholder-gray-500"
+                              ? "bg-gray-700 border-gray-600 text-white"
+                              : "bg-white border-gray-300 text-gray-700"
                           }`}
                         />
                       </div>
@@ -1441,10 +1626,8 @@ const Dashboard = ({
                       className={`text-center text-sm mb-4 ${
                         isDarkMode ? "text-gray-400" : "text-gray-500"
                       }`}
-                    >
-                    </p>
-                    <div className="">
-                    </div>
+                    ></p>
+                    <div className=""></div>
                   </div>
 
                   <div className="mt-6 text-center">
@@ -1452,8 +1635,7 @@ const Dashboard = ({
                       className={`text-sm ${
                         isDarkMode ? "text-gray-400" : "text-gray-600"
                       }`}
-                    >
-                    </p>
+                    ></p>
                   </div>
                 </div>
               </div>
@@ -1548,7 +1730,8 @@ const Dashboard = ({
                         className={`flex-1 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                           isDarkMode
                             ? "bg-gray-700 border border-gray-600 text-white placeholder-gray-400"
-                            : "bg-white border border-gray-300 text-black placeholder-gray-500"}
+                            : "bg-white border border-gray-300 text-black placeholder-gray-500"
+                        }
                         }`}
                       />
                       <button
