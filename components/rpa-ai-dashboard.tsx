@@ -73,6 +73,10 @@ const Dashboard = ({
   } | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showCommands, setShowCommands] = useState(false);
+  const [filteredCommands, setFilteredCommands] = useState<
+    typeof slashCommands
+  >([]);
 
   // const weeklyData = [
   //   { day: "Sunday", revenue: 450, sales: 320 },
@@ -104,6 +108,45 @@ const Dashboard = ({
     { id: "dashboard", label: "Dashboards" },
     { id: "charts", label: "Charts" },
     { id: "reports", label: "Report Generation" },
+  ];
+
+  const slashCommands = [
+    {
+      command: "/revenue",
+      description: "Show current income and statistics",
+      response:
+        "Your current income is $13,254.62, up +18.25% from last month. This is the best result in the last 6 months! Average daily income: $442.82",
+    },
+    {
+      command: "/users",
+      description: "User statistics",
+      response:
+        "You have 124,302 users with a growth of +10.21%. Average activity: 10,265 daily visits. User retention rate: 76%",
+    },
+    {
+      command: "/orders",
+      description: "Order information",
+      response:
+        "Current orders: 1,242 (-3.75% from last month). Average order value: $10.67. Conversion: 3.43%",
+    },
+    {
+      command: "/help",
+      description: "Show all available commands",
+      response:
+        'Available commands: /revenue, /users, /orders, /performance, /report, /help. Type "/" to see all commands with descriptions.',
+    },
+    {
+      command: "/performance",
+      description: "Weekly performance analysis",
+      response:
+        "Current week: $1,402.43 vs Previous: $1,306.74 (+7.3%). Conversion: 3.43%. Number of customers: 4k. Growth trend is positive.",
+    },
+    {
+      command: "/report",
+      description: "Generate a quick report",
+      response:
+        "Quick report: Revenue ↗️ (+18.25%), Users ↗️ (+10.21%), Orders ↘️ (-3.75%). Recommendation: Optimize order conversion to improve performance.",
+    },
   ];
 
   const handleMouseDown = (e: { preventDefault: () => void }) => {
@@ -139,13 +182,16 @@ const Dashboard = ({
       if (showNotifications && !event.target.closest(".notifications-menu")) {
         setShowNotifications(false);
       }
+      if (showCommands && !event.target.closest(".relative")) {
+        setShowCommands(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showSettingsMenu, showNotifications]);
+  }, [showSettingsMenu, showNotifications, showCommands]);
 
   useEffect(() => {
     if (isDragging) {
@@ -165,34 +211,38 @@ const Dashboard = ({
 
       setTimeout(() => {
         let aiResponse = "";
-        const input = chatInput.toLowerCase();
+        const input = chatInput.toLowerCase().trim();
 
-        if (
+        // Перевірка на slash команди
+        const command = slashCommands.find((cmd) => cmd.command === input);
+        if (command) {
+          aiResponse = command.response;
+        } else if (
           input.includes("revenue") ||
           input.includes("money") ||
           input.includes("income")
         ) {
           aiResponse =
-            "Your current revenue is $9,254.62, which shows a strong +18.25% growth since last month. This is your best performing metric right now!";
+            "Your current revenue is $13,254.62, which shows a strong +18.25% growth since last month. This is your best performing metric right now!";
         } else if (input.includes("users") || input.includes("customers")) {
           aiResponse =
-            "You have 63,154 total users with a healthy +8.21% growth rate. User engagement appears strong based on your daily visit metrics.";
+            "You have 124,302 total users with a healthy +10.21% growth rate. User engagement appears strong based on your daily visit metrics.";
         } else if (input.includes("orders") || input.includes("sales")) {
           aiResponse =
-            "Current orders are at 753, showing a -5.75% decrease from last month. This might need attention - would you like me to analyze potential causes?";
+            "Current orders are at 1,242, showing a -3.75% decrease from last month. This might need attention - would you like me to analyze potential causes?";
         } else if (
           input.includes("day") ||
           input.includes("week") ||
           input.includes("performance")
         ) {
           aiResponse =
-            "Wednesday was your peak performance day with $560 revenue and 450 sales. Consider analyzing what made Wednesday successful to replicate across other days.";
+            "Current week shows $1,402.43 vs previous week $1,306.74 (+7.3% growth). Conversion rate is 3.43% with 4k customers. Performance trend is positive.";
         } else if (input.includes("report") || input.includes("generate")) {
           aiResponse =
             "I can help you generate a comprehensive report! Go to the Report Generation tab to create a detailed PDF with all your analytics data.";
         } else {
           aiResponse =
-            "Based on your dashboard: Revenue is up 18.25% ($9,254.62), you have 8,652 daily visits, but orders are down 5.75%. Focus on conversion optimization. What specific area would you like me to analyze?";
+            "Based on your dashboard: Revenue is up 18.25% ($13,254.62), you have 10,265 daily visits, but orders are down 3.75%. Focus on conversion optimization. What specific area would you like me to analyze?";
         }
 
         const newAiMessage = {
@@ -204,6 +254,7 @@ const Dashboard = ({
       }, 800);
 
       setChatInput("");
+      setShowCommands(false);
     }
   };
 
@@ -340,7 +391,7 @@ const Dashboard = ({
                         </div>
 
                         <div className="space-y-3 max-h-96 overflow-y-auto">
-                          {/* Notification 3 */}
+                          {/* Notification 1 */}
                           <div
                             className={`p-3 rounded-lg ${
                               isDarkMode ? "bg-gray-700" : "bg-gray-50"
@@ -381,7 +432,7 @@ const Dashboard = ({
                             </div>
                           </div>
 
-                          {/* Notification 5 - Read */}
+                          {/* Notification 2 - Read */}
                           <div
                             className={`p-3 rounded-lg ${
                               isDarkMode ? "bg-gray-800" : "bg-white"
@@ -457,7 +508,7 @@ const Dashboard = ({
 
                 {showSettingsMenu && (
                   <div
-                    className={`absolute right-0 mt-2 w-48 rounded-lg shadow-lg z-50 ${
+                    className={`absolute right-0 mt-2 w-32 rounded-lg shadow-lg z-50 ${
                       isDarkMode
                         ? "bg-gray-800 border border-gray-700"
                         : "bg-white border border-gray-200"
@@ -465,79 +516,8 @@ const Dashboard = ({
                   >
                     <div className="py-1">
                       <button
-                        onClick={() => {
-                          setActiveTab("auth");
-                          setAuthTab("login");
-                          setShowSettingsMenu(false);
-                        }}
-                        className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
-                          isDarkMode
-                            ? "text-gray-300 hover:bg-gray-700"
-                            : "text-gray-700 hover:bg-gray-100"
-                        }`}
-                      >
-                        Authentication
-                      </button>
-                      <div className="border-t border-gray-200 my-1"></div>
-                      <button
-                        onClick={() => {
-                          setActiveTab("auth");
-                          setAuthTab("login");
-                          setShowSettingsMenu(false);
-                        }}
-                        className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
-                          isDarkMode
-                            ? "text-gray-300 hover:bg-gray-700"
-                            : "text-gray-700 hover:bg-gray-100"
-                        }`}
-                      >
-                        Login
-                      </button>
-                      <button
-                        onClick={() => {
-                          setActiveTab("auth");
-                          setAuthTab("register");
-                          setShowSettingsMenu(false);
-                        }}
-                        className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
-                          isDarkMode
-                            ? "text-gray-300 hover:bg-gray-700"
-                            : "text-gray-700 hover:bg-gray-100"
-                        }`}
-                      >
-                        Register
-                      </button>
-                      <button
-                        onClick={() => {
-                          setActiveTab("auth");
-                          setAuthTab("forgot");
-                          setShowSettingsMenu(false);
-                        }}
-                        className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
-                          isDarkMode
-                            ? "text-gray-300 hover:bg-gray-700"
-                            : "text-gray-700 hover:bg-gray-100"
-                        }`}
-                      >
-                        Forgot Password
-                      </button>
-                      <button
-                        onClick={() => {
-                          setActiveTab("auth");
-                          setAuthTab("lock");
-                          setShowSettingsMenu(false);
-                        }}
-                        className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
-                          isDarkMode
-                            ? "text-gray-300 hover:bg-gray-700"
-                            : "text-gray-700 hover:bg-gray-100"
-                        }`}
-                      >
-                        Lock Screen
-                      </button>
-                      <button
                         onClick={logout}
-                        className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
+                        className={`block w-full text-center px-4 py-2 text-sm transition-colors ${
                           isDarkMode
                             ? "text-gray-300 hover:bg-gray-700"
                             : "text-gray-700 hover:bg-gray-100"
@@ -1709,15 +1689,37 @@ const Dashboard = ({
                       ))}
                     </div>
 
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-2 relative">
                       <input
                         type="text"
                         value={chatInput}
-                        onChange={(e) => setChatInput(e.target.value)}
-                        onKeyPress={(e) =>
-                          e.key === "Enter" && handleSendMessage()
-                        }
-                        placeholder="Ask about your dashboard data..."
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setChatInput(value);
+
+                          if (value === "/") {
+                            setShowCommands(true);
+                            setFilteredCommands(slashCommands);
+                          } else if (value.startsWith("/")) {
+                            const filtered = slashCommands.filter((cmd) =>
+                              cmd.command
+                                .toLowerCase()
+                                .includes(value.toLowerCase())
+                            );
+                            setFilteredCommands(filtered);
+                            setShowCommands(filtered.length > 0);
+                          } else {
+                            setShowCommands(false);
+                          }
+                        }}
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter") {
+                            handleSendMessage();
+                          } else if (e.key === "Escape") {
+                            setShowCommands(false);
+                          }
+                        }}
+                        placeholder="Ask about your dashboard data or type / for commands..."
                         className={`flex-1 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                           isDarkMode
                             ? "bg-gray-700 border border-gray-600 text-white placeholder-gray-400"
@@ -1732,6 +1734,56 @@ const Dashboard = ({
                         <Send size={16} />
                       </button>
                     </div>
+                    {showCommands && (
+                      <div
+                        className={`absolute bottom-16 left-0 right-12 rounded-lg shadow-lg border z-50 max-h-60 overflow-y-auto ${
+                          isDarkMode
+                            ? "bg-gray-700 border-gray-600"
+                            : "bg-white border-gray-200"
+                        }`}
+                      >
+                        <div className="p-2">
+                          <div
+                            className={`text-xs font-medium mb-2 px-2 ${
+                              isDarkMode ? "text-gray-300" : "text-gray-600"
+                            }`}
+                          >
+                            Available Commands
+                          </div>
+                          {filteredCommands.map((cmd, index) => (
+                            <button
+                              key={index}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setChatInput(cmd.command);
+                                setShowCommands(false);
+                                // Автоматично відправити команду (опціонально)
+                                // handleSendMessage();
+                              }}
+                              className={`w-full text-left p-2 rounded hover:${
+                                isDarkMode ? "bg-gray-600" : "bg-gray-100"
+                              } transition-colors cursor-pointer`}
+                            >
+                              <div
+                                className={`font-medium text-sm ${
+                                  isDarkMode ? "text-blue-400" : "text-blue-600"
+                                }`}
+                              >
+                                {cmd.command}
+                              </div>
+                              <div
+                                className={`text-xs ${
+                                  isDarkMode ? "text-gray-400" : "text-gray-500"
+                                } mt-1`}
+                              >
+                                {cmd.description}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </>
                 )}
               </div>
