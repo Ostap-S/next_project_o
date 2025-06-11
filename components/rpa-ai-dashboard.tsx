@@ -32,11 +32,9 @@ import { useRouter } from "next/navigation";
 const Dashboard = ({
   email,
   weeklyData,
-}: // users
-{
+}: {
   email: string;
   weeklyData: any;
-  // users: any
 }) => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -77,22 +75,6 @@ const Dashboard = ({
   const [filteredCommands, setFilteredCommands] = useState<
     typeof slashCommands
   >([]);
-
-  // const weeklyData = [
-  //   { day: "Sunday", revenue: 450, sales: 320 },
-  //   { day: "Monday", revenue: 500, sales: 250 },
-  //   { day: "Tuesday", revenue: 420, sales: 380 },
-  //   { day: "Wednesday", revenue: 560, sales: 450 },
-  //   { day: "Thursday", revenue: 230, sales: 200 },
-  //   { day: "Friday", revenue: 410, sales: 370 },
-  //   { day: "Saturday", revenue: 190, sales: 390 },
-  // ];
-
-  // Sales
-  // id
-  // revenue
-  // sale
-  // createdAt
 
   const yearlyData = [
     { year: "2019", q1: 26, q2: 15 },
@@ -213,7 +195,6 @@ const Dashboard = ({
         let aiResponse = "";
         const input = chatInput.toLowerCase().trim();
 
-        // Перевірка на slash команди
         const command = slashCommands.find((cmd) => cmd.command === input);
         if (command) {
           aiResponse = command.response;
@@ -1758,8 +1739,6 @@ const Dashboard = ({
                                 e.stopPropagation();
                                 setChatInput(cmd.command);
                                 setShowCommands(false);
-                                // Автоматично відправити команду (опціонально)
-                                // handleSendMessage();
                               }}
                               className={`w-full text-left p-2 rounded hover:${
                                 isDarkMode ? "bg-gray-600" : "bg-gray-100"
